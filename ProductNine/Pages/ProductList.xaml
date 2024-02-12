@@ -1,0 +1,107 @@
+﻿<Page x:Class="ProductNine.Pages.ProductList"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:model="clr-namespace:ProductNine"
+      xmlns:convert="clr-namespace:ProductNine.mvvm.converter"
+      xmlns:vm="clr-namespace:ProductNine.mvvm.vm"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ProductList">
+    <Page.Resources>
+        <convert:StockToBackground x:Key="converter"/>
+        <DataTemplate DataType="{x:Type model:Product}">
+            <Grid Background="{Binding ProductQuantityInStock, Converter={StaticResource converter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="Black" BorderThickness="0.5">
+                    <Image MaxWidth="300" Source="{Binding Image}"/>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0.5" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                   Text="{Binding Article,
+                                        StringFormat='Артикул: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                   Text="{Binding Name,
+                                        StringFormat='Название: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding IdCategory.Name,
+                                        StringFormat='Категория: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding IdManufacturer.Name,
+                                        StringFormat='Производитель: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding Price,
+                                        StringFormat='Цена: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding CurrentDiscount,
+                                        StringFormat='Скидка: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding MaxDiscount,
+                                        StringFormat='Скидка (макс): {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding Unit,
+                                        StringFormat='Ед.изм.: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding IdProvider.Name,
+                                        StringFormat='Поставщик: {0}'}"/>
+                        <TextBlock Style="{StaticResource textBlock}" 
+                                    Text="{Binding Description,
+                                        StringFormat='Описание: {0}'}"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0.5" Grid.Column="2">
+                    <StackPanel>
+                        <Label Content="Наличие на складе"/>
+                        <Label Content="{Binding ProductQuantityInStock}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <Label Content="Поиск:"/>
+                <TextBox Text="{Binding SearchText, 
+                    UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <Label Content="Фильтрация по производителю:"/>
+                <ComboBox ItemsSource="{Binding Manufacturers}"
+                          SelectedItem="{Binding SelectedManufacturer}"
+                          DisplayMemberPath="Title"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <Label Content="Сортировка по стоимости:"/>
+                <ComboBox ItemsSource="{Binding SortValues}"
+              SelectedItem="{Binding SelectedSortValue}"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" Visibility="{Binding AdminVisibility}" Orientation="Horizontal" Grid.Column="3">
+                <Button Content="Добавить" Command="{Binding CreateProduct}"/>
+                <Button Content="Редактировать" Command="{Binding EditProduct}"/>
+                <Button Content="Удалить" Command="{Binding DeleteProduct}"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="1">
+            <Label Content="{Binding SearchInfo}"/>
+        </StackPanel>
+        <ListBox MouseDoubleClick="ListBox_MouseDoubleClick" Grid.Row="2" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" />
+    </Grid>
+</Page>
